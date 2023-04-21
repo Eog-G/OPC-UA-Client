@@ -9,7 +9,7 @@ using Opc.UaFx.Client;
 
 namespace OPC_UA_Client.Core
 {
-    internal class OPCServerConfiguration
+    public class OPCServerConfiguration
     {
         public string url { get; set; }
         public string[] tagNames { get; set; }

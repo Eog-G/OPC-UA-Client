@@ -5,6 +5,8 @@ VisualStudioVersion = 17.5.33516.290
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OPC-UA-Client", "OPC-UA-Client\OPC-UA-Client.csproj", "{525FDD56-D74A-4230-9C67-5CEE59FF7139}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Console", "Console\Console.csproj", "{AB21FBA0-02F9-467D-95B8-185CB66ACE3C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{525FDD56-D74A-4230-9C67-5CEE59FF7139}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{525FDD56-D74A-4230-9C67-5CEE59FF7139}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{525FDD56-D74A-4230-9C67-5CEE59FF7139}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB21FBA0-02F9-467D-95B8-185CB66ACE3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB21FBA0-02F9-467D-95B8-185CB66ACE3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB21FBA0-02F9-467D-95B8-185CB66ACE3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB21FBA0-02F9-467D-95B8-185CB66ACE3C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
