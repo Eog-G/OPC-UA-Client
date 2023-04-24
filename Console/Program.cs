@@ -11,6 +11,7 @@ using System.Web.SessionState;
 using Opc.Ua;
 using Opc.UaFx;
 using Opc.UaFx.Client;
+using Opc.UaFx.Services;
 
 namespace Console
 {
@@ -18,7 +19,8 @@ namespace Console
     {
         static void Main(string[] args)
         {
-            OpcClient client = new OpcClient("opc.tcp://uksgclap055:62640/IntegrationObjects/ServerSimulator");
+            
+            OpcClient client = new OpcClient("opc.tcp://eog-pc:62640/IntegrationObjects/ServerSimulator");
             client.Connect();
 
             Traverse_Nodes(client, true);
@@ -49,10 +51,17 @@ namespace Console
                 // Print the TagID of this node
                 if (node.NodeId.Value is string tagId && (realTimeTags || !realTimeOnly))
                 {
+                    OpcWriteNode opcWriteNode = new OpcWriteNode(node.NodeId, client);
+                    OpcWriteNodesRequest request = new OpcWriteNodesRequest(opcWriteNode);
+
+                    
+
                     System.Console.WriteLine(realTimeTags);
                     System.Console.WriteLine($"Display name: {node.DisplayName}");
                     System.Console.WriteLine($"NodeID: {node.NodeId}");
                     System.Console.WriteLine($"Value: {client.ReadNode(node.NodeId)}");
+                    System.Console.WriteLine($"Category: {node.Category}\nReference: {node.Reference}\nContext: {node.Context}");
+                    System.Console.WriteLine($"No idea: {request.GetType()}");
                     System.Console.WriteLine($"\n");
                     
                 }

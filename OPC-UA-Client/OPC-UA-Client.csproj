@@ -115,7 +115,7 @@
     </Compile>
     <Compile Include="Core\ObservableDouble.cs" />
     <Compile Include="Core\ObservableString.cs" />
-    <Compile Include="Core\OPCServerConfiguration.cs" />
+    <Compile Include="Core\OPCServer.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

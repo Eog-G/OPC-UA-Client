@@ -25,7 +25,7 @@ namespace OPC_UA_Client.Screens
     /// </summary>
     public partial class MainPage : UserControl
     {
-        public OPCServerConfiguration opcServer = new OPCServerConfiguration("opc.tcp://uksgclap055:62640/IntegrationObjects/ServerSimulator", new string[] { "2:Tag1", "2:Tag99" });
+        private OPCServer opcServer = OPCServer.Instance;
         private ConcurrentQueue<short> _queue = new ConcurrentQueue<short>();
         private ObservableString snackbarMessage = new ObservableString();
         private DispatcherTimer _timer;
@@ -46,11 +46,17 @@ namespace OPC_UA_Client.Screens
 
         private void Timer_Tick(object sender, EventArgs e)
         {
-            liveTextBox.Text = opcServer.ReadValue(1);
+            liveTextBox.Text = opcServer.ReadTag99(1);
         }
 
         private async void writeButton_Click(object sender, RoutedEventArgs e)
         {
+            if (!opcServer.connected)
+            {
+                snackbarPopup("No Server Connected");
+                return;
+            }
+
             TextBox textBox = (TextBox)this.FindName("writeTextBox");
 
             if (short.TryParse(textBox.Text, out short result))
@@ -73,7 +79,12 @@ namespace OPC_UA_Client.Screens
 
         private void readButton_Click(object sender, RoutedEventArgs e)
         {
-            readTextBox.Text = opcServer.ReadValue(0);
+            if (!opcServer.connected)
+            {
+                snackbarPopup("No Server Connected");
+                return;
+            } 
+            readTextBox.Text = opcServer.testValue;
         }
 
         private async void ProcessQueueAsync()
@@ -84,10 +95,11 @@ namespace OPC_UA_Client.Screens
                 {
                     await Task.Run(() =>
                     {
-                        opcServer.WriteValue(Convert.ToInt16(value));
+                        opcServer.WriteValue("2:Tag1", Convert.ToInt16(value));
                         Dispatcher.Invoke(() =>
                         {
-                            snackbarPopup($"{value} successfully written to OPC server");
+                            snackbarPopup($"{value} written to {opcServer.testValue}");
+                            
                         });
                     });
                 }
@@ -109,6 +121,12 @@ namespace OPC_UA_Client.Screens
 
         private void liveButton_Click(object sender, RoutedEventArgs e)
         {
+            if (!opcServer.connected)
+            {
+                snackbarPopup("No Server Connected");
+                return;
+            }
+
             ToggleButton toggleButton = sender as ToggleButton;
 
             if ((bool)toggleButton.IsChecked)

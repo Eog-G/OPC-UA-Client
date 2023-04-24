@@ -29,12 +29,12 @@ namespace OPC_UA_Client
     /// </summary>
     public partial class MainWindow : Window
     {
-
+        private OPCServer opcServer = OPCServer.Instance;
         private int SelectedPageIndex = 1;
 
         private void Window_Closed(object sender, EventArgs e)
         {
-            MainPage.opcServer.CloseConnection();
+            opcServer.Disconnect();
         }
 
         private void LeftNavigationButton_Click(object sender, RoutedEventArgs e)
