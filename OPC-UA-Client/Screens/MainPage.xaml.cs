@@ -1,4 +1,5 @@
-﻿using OPC_UA_Client.Core;
+﻿using Opc.Ua;
+using OPC_UA_Client.Core;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -46,7 +47,7 @@ namespace OPC_UA_Client.Screens
 
         private void Timer_Tick(object sender, EventArgs e)
         {
-            liveTextBox.Text = opcServer.ReadTag99(1);
+            liveTextBox.Text = opcServer.ReadTag("2:Tag99");
         }
 
         private async void writeButton_Click(object sender, RoutedEventArgs e)
@@ -56,6 +57,7 @@ namespace OPC_UA_Client.Screens
                 snackbarPopup("No Server Connected");
                 return;
             }
+
 
             TextBox textBox = (TextBox)this.FindName("writeTextBox");
 
@@ -83,8 +85,9 @@ namespace OPC_UA_Client.Screens
             {
                 snackbarPopup("No Server Connected");
                 return;
-            } 
-            readTextBox.Text = opcServer.testValue;
+            }
+
+            opcServer.ReadTag("2:Tag99");
         }
 
         private async void ProcessQueueAsync()
@@ -98,7 +101,7 @@ namespace OPC_UA_Client.Screens
                         opcServer.WriteValue("2:Tag1", Convert.ToInt16(value));
                         Dispatcher.Invoke(() =>
                         {
-                            snackbarPopup($"{value} written to {opcServer.testValue}");
+                            snackbarPopup($"{value} written to {opcServer.rwTag}");
                             
                         });
                     });

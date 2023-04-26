@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Management.Instrumentation;
+using System.Runtime.CompilerServices;
 using System.ServiceModel.Dispatcher;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,7 +15,22 @@ namespace OPC_UA_Client.Core
 {
     public class OPCServer
     {
-        public string testValue;
+        public string rwTag;
+        public string rwTagType 
+        { 
+            get 
+            {
+                try
+                {
+                    var node = client.ReadNode(rwTag);
+                    return node.Value.GetType().ToString();
+                }
+                catch
+                {
+                    return null;
+                }
+            } 
+        }
 
         private static OPCServer instance = null;
         private static readonly object padlock = new object();
@@ -22,15 +38,11 @@ namespace OPC_UA_Client.Core
         public bool connected;
         public string EndpointURL { get; set; }
 
-        public OpcValue tag99 { get; set; }
-
         private OpcClient client;
 
         public OPCServer()
         {
             this.EndpointURL = "";
-            this.tag99 = 0;
-            
 
             try
             {
@@ -67,14 +79,17 @@ namespace OPC_UA_Client.Core
             }
         }
 
-        public string ReadTag99(int index)
+        public string ReadTag(string tagID)
         {
             if(connected)
             {
-                tag99 = client.ReadNode("2:Tag99");
+                try
+                {
+                    return client.ReadNode(tagID).ToString();
+                }
+                catch { return null; }
             }
-
-            return tag99.ToString();
+            return null;
         }
         
         public void Connect()
@@ -91,6 +106,7 @@ namespace OPC_UA_Client.Core
                 connected = false;
             }
         }
+
 
         public void Disconnect()
         {
