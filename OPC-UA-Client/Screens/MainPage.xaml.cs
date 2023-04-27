@@ -110,7 +110,7 @@ namespace OPC_UA_Client.Screens
                         opcServer.WriteValue("2:Tag1", Convert.ToInt16(value));
                         Dispatcher.Invoke(() =>
                         {
-                            mainWindow.snackbarPopup($"{value} written to {opcServer.testValue}");
+                            mainWindow.snackbarPopup($"{value} written to {opcServer.rwTag}");
                             
                         });
                     });
