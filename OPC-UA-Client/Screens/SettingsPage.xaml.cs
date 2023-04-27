@@ -88,7 +88,7 @@ namespace OPC_UA_Client.Screens
 
         private void writeTagTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            opcServer.testValue = writeTagTextBox.Text;
+            opcServer.rwTag = writeTagTextBox.Text;
         }
     }
 }
