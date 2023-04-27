@@ -29,19 +29,28 @@ namespace OPC_UA_Client.Screens
         private ConcurrentQueue<short> _queue = new ConcurrentQueue<short>();
         private ObservableString snackbarMessage = new ObservableString();
         private DispatcherTimer _timer;
+        private MainWindow mainWindow;
 
         public MainPage()
         {
             InitializeComponent();
 
             ProcessQueueAsync();
-            snackbar.DataContext = snackbarMessage;
 
             _timer = new DispatcherTimer();
             _timer.Interval = TimeSpan.FromSeconds(1);
             _timer.Tick += Timer_Tick;
 
+            Loaded += UserControl_Loaded;
+        }
 
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            // Get a reference to the parent window
+            mainWindow = Window.GetWindow(this) as MainWindow;
+
+            // Unsubscribe from the Loaded event
+            Loaded -= UserControl_Loaded;
         }
 
         private void Timer_Tick(object sender, EventArgs e)
@@ -53,7 +62,7 @@ namespace OPC_UA_Client.Screens
         {
             if (!opcServer.connected)
             {
-                snackbarPopup("No Server Connected");
+                mainWindow.snackbarPopup("No Server Connected");
                 return;
             }
 
@@ -72,7 +81,7 @@ namespace OPC_UA_Client.Screens
             }
             else
             {
-                snackbarPopup("Invalid Int16 value");
+                mainWindow.snackbarPopup("Invalid Int16 value");
             }
             textBox.Text = null;
         }
@@ -81,7 +90,7 @@ namespace OPC_UA_Client.Screens
         {
             if (!opcServer.connected)
             {
-                snackbarPopup("No Server Connected");
+                mainWindow.snackbarPopup("No Server Connected");
                 return;
             } 
             readTextBox.Text = opcServer.testValue;
@@ -98,7 +107,7 @@ namespace OPC_UA_Client.Screens
                         opcServer.WriteValue("2:Tag1", Convert.ToInt16(value));
                         Dispatcher.Invoke(() =>
                         {
-                            snackbarPopup($"{value} written to {opcServer.testValue}");
+                            mainWindow.snackbarPopup($"{value} written to {opcServer.testValue}");
                             
                         });
                     });
@@ -107,23 +116,11 @@ namespace OPC_UA_Client.Screens
             }
         }
 
-        private async void snackbarPopup(string message)
-        {
-            snackbarMessage.Value = message;
-
-            snackbar.IsActive = true;
-            await Task.Run(() =>
-            {
-                Thread.Sleep(3000);
-            });
-            snackbar.IsActive = false;
-        }
-
         private void liveButton_Click(object sender, RoutedEventArgs e)
         {
             if (!opcServer.connected)
             {
-                snackbarPopup("No Server Connected");
+                mainWindow.snackbarPopup("No Server Connected");
                 return;
             }
 

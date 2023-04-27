@@ -31,6 +31,13 @@ namespace OPC_UA_Client
     {
         private OPCServer opcServer = OPCServer.Instance;
         private int SelectedPageIndex = 1;
+        private ObservableString snackbarMessage = new ObservableString();
+
+        public MainWindow()
+        {
+            InitializeComponent();
+            snackbar.DataContext = snackbarMessage;
+        }
 
         private void Window_Closed(object sender, EventArgs e)
         {
@@ -45,6 +52,18 @@ namespace OPC_UA_Client
         private void RightNavigationButton_Click(object sender, RoutedEventArgs e)
         {
             if(Transitioner.SelectedIndex != 2) { Transitioner.SelectedIndex += 1; }
+        }
+
+        public async void snackbarPopup(string message)
+        {
+            snackbarMessage.Value = message;
+
+            snackbar.IsActive = true;
+            await Task.Run(() =>
+            {
+                Thread.Sleep(3000);
+            });
+            snackbar.IsActive = false;
         }
     }
 }

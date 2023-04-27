@@ -94,14 +94,17 @@ namespace OPC_UA_Client.Core
 
         public void Disconnect()
         {
-            try
+            if (connected)
             {
-                client.Disconnect();
-                connected = false;
-            }
-            catch
-            {
-                return;
+                try
+                {
+                    client.Disconnect();
+                    connected = false;
+                }
+                catch
+                {
+                    return;
+                }
             }
         }
     }
