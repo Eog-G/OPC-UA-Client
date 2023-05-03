@@ -27,7 +27,7 @@ namespace OPC_UA_Client.Screens
     public partial class MainPage : UserControl
     {
         private OPCServer opcServer = OPCServer.Instance;
-        private ConcurrentQueue<short> _queue = new ConcurrentQueue<short>();
+        private ConcurrentQueue<string> _queue = new ConcurrentQueue<string>();
         private ObservableString snackbarMessage = new ObservableString();
         private DispatcherTimer _timer;
 
@@ -50,7 +50,7 @@ namespace OPC_UA_Client.Screens
             liveTextBox.Text = opcServer.ReadTag("2:Tag99");
         }
 
-        private async void writeButton_Click(object sender, RoutedEventArgs e)
+        private void writeButton_Click(object sender, RoutedEventArgs e)
         {
             if (!opcServer.connected)
             {
@@ -58,25 +58,16 @@ namespace OPC_UA_Client.Screens
                 return;
             }
 
-
-            TextBox textBox = (TextBox)this.FindName("writeTextBox");
-
-            if (short.TryParse(textBox.Text, out short result))
+            if (!string.IsNullOrEmpty(writeTextBox.Text))
             {
-
-                await Task.Run(() =>
-                {
-                    Dispatcher.Invoke(() =>
-                    {
-                        _queue.Enqueue(result);
-                    });
-                });
+                _queue.Enqueue(writeTextBox.Text);
             }
             else
             {
-                snackbarPopup("Invalid Int16 value");
+                snackbarPopup("Invalid Value");
             }
-            textBox.Text = null;
+            
+            writeTextBox.Text = null;
         }
 
         private void readButton_Click(object sender, RoutedEventArgs e)
@@ -87,23 +78,31 @@ namespace OPC_UA_Client.Screens
                 return;
             }
 
-            opcServer.ReadTag("2:Tag99");
+            readTextBox.Text = opcServer.ReadTag(opcServer.RWTag);
         }
 
         private async void ProcessQueueAsync()
         {
             while (true)
             {
-                if (_queue.TryDequeue(out short value))
+                if (_queue.TryDequeue(out string value))
                 {
                     await Task.Run(() =>
                     {
-                        opcServer.WriteValue("2:Tag1", Convert.ToInt16(value));
-                        Dispatcher.Invoke(() =>
+                        if(opcServer.RWTag != null)
                         {
-                            snackbarPopup($"{value} written to {opcServer.rwTag}");
+                            opcServer.WriteValue(value);
+                            Dispatcher.Invoke(() =>
+                            {
+                                snackbarPopup($"{value} written to {opcServer.RWTag}");
+
+                            });
+                        }
+                        else
+                        {
                             
-                        });
+                        }
+                        
                     });
                 }
                 await Task.Delay(100);
@@ -136,15 +135,15 @@ namespace OPC_UA_Client.Screens
             {
                 _timer.Stop();
                 liveButtonIcon.Kind = MaterialDesignThemes.Wpf.PackIconKind.Play;
-                liveButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#2AB53F"));
-                liveButton.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#2AB53F"));
+                liveButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#7BC74D"));
+                liveButton.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#7BC74D"));
             }
             else
             {
                 _timer.Start();
                 liveButtonIcon.Kind = MaterialDesignThemes.Wpf.PackIconKind.Pause;
-                liveButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFDD2C00"));
-                liveButton.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFDD2C00"));
+                liveButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF5A5F"));
+                liveButton.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF5A5F"));
             }
         }
     }

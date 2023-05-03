@@ -15,19 +15,48 @@ namespace OPC_UA_Client.Core
 {
     public class OPCServer
     {
-        public string rwTag;
-        public string rwTagType 
+        public string RWTag
+        {
+            get
+            {
+                return RWTag;
+            }
+            set
+            {
+                try
+                {
+                    var node = client.ReadNode(value);
+                    if (node.Value != null)
+                    {
+                        RWTag = value;
+                    }
+                }
+                catch
+                {
+                    RWTag = null;
+                }
+            }
+        }
+
+        public string RWTagType 
         { 
             get 
             {
                 try
                 {
-                    var node = client.ReadNode(rwTag);
-                    return node.Value.GetType().ToString();
+                    var node = client.ReadNode(RWTag);
+                    if (node.Value != null)
+                    {
+                        return node.DataType.ToString();
+                    }
+                    else
+                    {
+                        return "null";
+                    }
                 }
                 catch
                 {
-                    return null;
+                    return "null";
                 }
             } 
         }
@@ -71,11 +100,11 @@ namespace OPC_UA_Client.Core
             }
         }
 
-        public void WriteValue(string tagID, Int16 value)
+        public void WriteValue(string value)
         {
             if(connected)
             {
-                client.WriteNode(tagID, value);
+                client.WriteNode(RWTag, value);
             }
         }
 
@@ -112,8 +141,11 @@ namespace OPC_UA_Client.Core
         {
             try
             {
-                client.Disconnect();
-                connected = false;
+                if (connected)
+                {
+                    client.Disconnect();
+                    connected = false;
+                }
             }
             catch
             {

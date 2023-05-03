@@ -17,7 +17,7 @@
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon Kind="Pencil" VerticalAlignment="Center" Width="18" Height="18" Foreground="Gray" Margin="0,0,5,0"/>
                     <TextBox x:Name="writeTextBox" Style="{StaticResource MaterialDesignOutlinedTextBox}" BorderBrush="LightGray" Padding="5,0,0,0" HorizontalContentAlignment="Left" VerticalAlignment="Center" VerticalContentAlignment="Center" materialDesign:HintAssist.Hint="Write Tag" materialDesign:HintAssist.Foreground="Gray" materialDesign:HintAssist.FloatingOffset="0,-14" materialDesign:HintAssist.FloatingScale="1" Height="24" Width="119" FontSize="11" materialDesign:RippleAssist.RippleOnTop="True"/>
-                    <Button x:Name="writeButton" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Content="Write" Click="writeButton_Click" Margin="10,0,5,0" Height="22" Width="48" FontSize="11" Padding="0"/>
+                    <Button x:Name="writeButton" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Background="#FF5A5F" BorderBrush="#FF5A5F" Content="Write" Click="writeButton_Click" Margin="10,0,5,0" Height="22" Width="48" FontSize="11" Padding="0"/>
                 </StackPanel>
             </materialDesign:Card>
 
@@ -25,7 +25,7 @@
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon Kind="Magnify" VerticalAlignment="Center" Width="18" Height="18" Foreground="Gray" Margin="0,0,5,0"/>
                     <TextBox x:Name="readTextBox" IsEnabled="False" Style="{StaticResource MaterialDesignOutlinedTextBox}" BorderBrush="LightGray" Padding="5,0,0,0" HorizontalContentAlignment="Left" VerticalAlignment="Center" VerticalContentAlignment="Center" materialDesign:HintAssist.Hint="Read Tag" materialDesign:HintAssist.Foreground="Gray" materialDesign:HintAssist.FloatingOffset="0,-14" materialDesign:HintAssist.FloatingScale="1" Height="24" Width="119" FontSize="11" materialDesign:RippleAssist.RippleOnTop="True"/>
-                    <Button x:Name="readButton" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Content="Read" Click="readButton_Click" Margin="10,0,5,0" Height="22" Width="48" FontSize="11" Padding="0"/>
+                    <Button x:Name="readButton" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Background="#FF5A5F" BorderBrush="#FF5A5F" Content="Read" Click="readButton_Click" Margin="10,0,5,0" Height="22" Width="48" FontSize="11" Padding="0"/>
 
                 </StackPanel>
             </materialDesign:Card>
@@ -34,7 +34,7 @@
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon Kind="Dice3" VerticalAlignment="Center" Width="18" Height="18" Foreground="Gray" Margin="0,0,5,0"/>
                     <TextBox x:Name="liveTextBox" IsEnabled="False" Style="{StaticResource MaterialDesignOutlinedTextBox}" BorderBrush="LightGray" Padding="5,0,0,0" HorizontalContentAlignment="Left" VerticalAlignment="Center" VerticalContentAlignment="Center" materialDesign:HintAssist.Hint="Live Tag" materialDesign:HintAssist.Foreground="Gray" materialDesign:HintAssist.FloatingOffset="0,-14" materialDesign:HintAssist.FloatingScale="1" Height="24" Width="119" FontSize="11" materialDesign:RippleAssist.RippleOnTop="True"/>
-                    <ToggleButton x:Name="liveButton" BorderBrush="#2AB53F" Background="#2AB53F" IsChecked="True" Click="liveButton_Click" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Margin="10,0,5,0" Height="22" Width="48" FontSize="11" Padding="0">
+                    <ToggleButton x:Name="liveButton" Background="#7BC74D" BorderBrush="#7BC74D" IsChecked="True" Click="liveButton_Click" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Margin="10,0,5,0" Height="22" Width="48" FontSize="11" Padding="0">
                         <materialDesign:PackIcon x:Name="liveButtonIcon" Kind="Play"/>
                     </ToggleButton>
                 </StackPanel>

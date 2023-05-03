@@ -30,7 +30,6 @@ namespace OPC_UA_Client
     public partial class MainWindow : Window
     {
         private OPCServer opcServer = OPCServer.Instance;
-        private int SelectedPageIndex = 1;
 
         private void Window_Closed(object sender, EventArgs e)
         {
@@ -39,12 +38,32 @@ namespace OPC_UA_Client
 
         private void LeftNavigationButton_Click(object sender, RoutedEventArgs e)
         {
-            if(Transitioner.SelectedIndex != 0) { Transitioner.SelectedIndex -= 1; }
+            if (Transitioner.SelectedIndex != 0) { Transitioner.SelectedIndex -= 1; }
+            if (Transitioner.SelectedIndex == 0) 
+            { 
+                LeftNavigationButton.Visibility = Visibility.Hidden;
+                RightNavigationButton.Visibility = Visibility.Visible;
+            }
+            else 
+            {
+                LeftNavigationButton.Visibility = Visibility.Visible;
+                RightNavigationButton.Visibility = Visibility.Visible;
+            }
         }
 
         private void RightNavigationButton_Click(object sender, RoutedEventArgs e)
         {
-            if(Transitioner.SelectedIndex != 2) { Transitioner.SelectedIndex += 1; }
+            if (Transitioner.SelectedIndex != 2) { Transitioner.SelectedIndex += 1; }
+            if (Transitioner.SelectedIndex == 2) 
+            { 
+                RightNavigationButton.Visibility = Visibility.Hidden;
+                LeftNavigationButton.Visibility = Visibility.Visible;
+            }
+            else 
+            { 
+                RightNavigationButton.Visibility = Visibility.Visible;
+                LeftNavigationButton.Visibility = Visibility.Visible;
+            }
         }
     }
 }
