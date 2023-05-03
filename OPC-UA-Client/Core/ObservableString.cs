@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace OPC_UA_Client.Core
 {
-    internal class ObservableString : INotifyPropertyChanged
+    public class ObservableString : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
         protected void NotifyPropertyChanged(string info)

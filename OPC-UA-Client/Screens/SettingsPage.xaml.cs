@@ -25,12 +25,12 @@ namespace OPC_UA_Client.Screens
     {
         private OPCServer opcServer = OPCServer.Instance;
         private ObservableString snackbarMessage = new ObservableString();
+        private MainWindow mainWindow;
 
         public SettingsPage()
         {
             InitializeComponent();
-
-            snackbar.DataContext = snackbarMessage;
+            Loaded += UserControl_Loaded;
 
             if(opcServer.connected)
             {
@@ -44,6 +44,15 @@ namespace OPC_UA_Client.Screens
                 connectButton.IsEnabled = true;
                 disconnectButton.IsEnabled = false;
             }
+        }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            // Get a reference to the parent window
+            mainWindow = Window.GetWindow(this) as MainWindow;
+
+            // Unsubscribe from the loaded event
+            Loaded -= UserControl_Loaded;
         }
 
         private void connectButton_Click(object sender, RoutedEventArgs e)
@@ -60,12 +69,12 @@ namespace OPC_UA_Client.Screens
                     }
                     catch
                     {
-                        snackbarPopup("Failed to connect to OPC UA server");
+                        mainWindow.snackbarPopup("Failed to connect to OPC UA server");
                     }
             }
             else
             {
-                snackbarPopup("Please enter an OPC UA server endpoint URL");
+                mainWindow.snackbarPopup("Please enter an OPC UA server endpoint URL");
             }
         }
 
@@ -75,18 +84,6 @@ namespace OPC_UA_Client.Screens
             connectionStatusIcon.Foreground = Brushes.Red;
             connectButton.IsEnabled = true;
             disconnectButton.IsEnabled = false;
-        }
-
-        private async void snackbarPopup(string message)
-        {
-            snackbarMessage.Value = message;
-
-            snackbar.IsActive = true;
-            await Task.Run(() =>
-            {
-                Thread.Sleep(3000);
-            });
-            snackbar.IsActive = false;
         }
 
         private void writeTagTextBox_TextChanged(object sender, TextChangedEventArgs e)

@@ -30,19 +30,28 @@ namespace OPC_UA_Client.Screens
         private ConcurrentQueue<string> _queue = new ConcurrentQueue<string>();
         private ObservableString snackbarMessage = new ObservableString();
         private DispatcherTimer _timer;
+        private MainWindow mainWindow;
 
         public MainPage()
         {
             InitializeComponent();
 
             ProcessQueueAsync();
-            snackbar.DataContext = snackbarMessage;
 
             _timer = new DispatcherTimer();
             _timer.Interval = TimeSpan.FromSeconds(1);
             _timer.Tick += Timer_Tick;
 
+            Loaded += UserControl_Loaded;
+        }
 
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            // Get a reference to the parent window
+            mainWindow = Window.GetWindow(this) as MainWindow;
+
+            // Unsubscribe from the Loaded event
+            Loaded -= UserControl_Loaded;
         }
 
         private void Timer_Tick(object sender, EventArgs e)
@@ -54,7 +63,7 @@ namespace OPC_UA_Client.Screens
         {
             if (!opcServer.connected)
             {
-                snackbarPopup("No Server Connected");
+                mainWindow.snackbarPopup("No Server Connected");
                 return;
             }
 
@@ -64,7 +73,7 @@ namespace OPC_UA_Client.Screens
             }
             else
             {
-                snackbarPopup("Invalid Value");
+                mainWindow.snackbarPopup("Invalid Int16 value");
             }
             
             writeTextBox.Text = null;
@@ -74,7 +83,7 @@ namespace OPC_UA_Client.Screens
         {
             if (!opcServer.connected)
             {
-                snackbarPopup("No Server Connected");
+                mainWindow.snackbarPopup("No Server Connected");
                 return;
             }
 
@@ -89,43 +98,23 @@ namespace OPC_UA_Client.Screens
                 {
                     await Task.Run(() =>
                     {
-                        if(opcServer.RWTag != null)
+                        opcServer.WriteValue("2:Tag1", Convert.ToInt16(value));
+                        Dispatcher.Invoke(() =>
                         {
-                            opcServer.WriteValue(value);
-                            Dispatcher.Invoke(() =>
-                            {
-                                snackbarPopup($"{value} written to {opcServer.RWTag}");
-
-                            });
-                        }
-                        else
-                        {
+                            mainWindow.snackbarPopup($"{value} written to {opcServer.rwTag}");
                             
-                        }
-                        
+                        });
                     });
                 }
                 await Task.Delay(100);
             }
         }
 
-        private async void snackbarPopup(string message)
-        {
-            snackbarMessage.Value = message;
-
-            snackbar.IsActive = true;
-            await Task.Run(() =>
-            {
-                Thread.Sleep(3000);
-            });
-            snackbar.IsActive = false;
-        }
-
         private void liveButton_Click(object sender, RoutedEventArgs e)
         {
             if (!opcServer.connected)
             {
-                snackbarPopup("No Server Connected");
+                mainWindow.snackbarPopup("No Server Connected");
                 return;
             }
 

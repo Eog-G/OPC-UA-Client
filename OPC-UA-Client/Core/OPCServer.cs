@@ -139,17 +139,17 @@ namespace OPC_UA_Client.Core
 
         public void Disconnect()
         {
-            try
+            if (connected)
             {
-                if (connected)
+                try
                 {
                     client.Disconnect();
                     connected = false;
                 }
-            }
-            catch
-            {
-                return;
+                catch
+                {
+                    return;
+                }
             }
         }
     }

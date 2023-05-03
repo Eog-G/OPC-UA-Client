@@ -50,9 +50,5 @@
 
         </StackPanel>
 
-        <materialDesign:Snackbar x:Name="snackbar" IsActive="False" HorizontalAlignment="Center" >
-            <materialDesign:SnackbarMessage HorizontalContentAlignment="Center" Content="{Binding Value}" FontSize="20" Padding="0" Margin="0"/>
-        </materialDesign:Snackbar>
-        
     </Grid>
 </UserControl>
