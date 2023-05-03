@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Management.Instrumentation;
 using System.Runtime.CompilerServices;
@@ -15,28 +16,8 @@ namespace OPC_UA_Client.Core
 {
     public class OPCServer
     {
-        public string RWTag
-        {
-            get
-            {
-                return RWTag;
-            }
-            set
-            {
-                try
-                {
-                    var node = client.ReadNode(value);
-                    if (node.Value != null)
-                    {
-                        RWTag = value;
-                    }
-                }
-                catch
-                {
-                    RWTag = null;
-                }
-            }
-        }
+
+        public string RWTag;
 
         public string RWTagType 
         { 
@@ -79,7 +60,7 @@ namespace OPC_UA_Client.Core
                 client.Connect();
                 connected = true;
             }
-            catch (Exception ex)
+            catch
             {
                 connected = false;
             }
@@ -100,11 +81,36 @@ namespace OPC_UA_Client.Core
             }
         }
 
-        public void WriteValue(string value)
+        public OPCReturnCode WriteValue(string value)
         {
             if(connected)
             {
-                client.WriteNode(RWTag, value);
+                var node = client.ReadNode(RWTag);
+                var nodeType = node.DataType.ToString();
+                
+
+                if(nodeType == "UInt16")
+                {
+
+                    if (UInt16.TryParse(value, out UInt16 res))
+                    {
+                        client.WriteNode(RWTag, res);
+                        return new OPCReturnCode(0); // OK
+                    }
+                    else
+                    {
+                        return new OPCReturnCode(1); // Incorrect Data Type
+                    }
+                }
+                else
+                {
+                    return new OPCReturnCode(-1);
+                }
+                
+            }
+            else
+            {
+                return new OPCReturnCode(2); // No connection
             }
         }
 

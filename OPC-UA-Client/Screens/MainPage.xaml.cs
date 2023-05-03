@@ -28,7 +28,6 @@ namespace OPC_UA_Client.Screens
     {
         private OPCServer opcServer = OPCServer.Instance;
         private ConcurrentQueue<string> _queue = new ConcurrentQueue<string>();
-        private ObservableString snackbarMessage = new ObservableString();
         private DispatcherTimer _timer;
         private MainWindow mainWindow;
 
@@ -98,10 +97,10 @@ namespace OPC_UA_Client.Screens
                 {
                     await Task.Run(() =>
                     {
-                        opcServer.WriteValue("2:Tag1", Convert.ToInt16(value));
+                        opcServer.WriteValue(value);
                         Dispatcher.Invoke(() =>
                         {
-                            mainWindow.snackbarPopup($"{value} written to {opcServer.rwTag}");
+                            mainWindow.snackbarPopup($"{value} written to {opcServer.RWTag}");
                             
                         });
                     });
