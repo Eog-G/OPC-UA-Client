@@ -24,7 +24,6 @@ namespace OPC_UA_Client.Screens
     public partial class SettingsPage : UserControl
     {
         private OPCServer opcServer = OPCServer.Instance;
-        private ObservableString snackbarMessage = new ObservableString();
         private MainWindow mainWindow;
 
         public SettingsPage()

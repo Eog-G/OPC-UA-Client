@@ -97,10 +97,18 @@ namespace OPC_UA_Client.Screens
                 {
                     await Task.Run(() =>
                     {
-                        opcServer.WriteValue(value);
+                        OPCReturnCode returnCode = opcServer.WriteValue(value);
                         Dispatcher.Invoke(() =>
                         {
-                            mainWindow.snackbarPopup($"{value} written to {opcServer.RWTag}");
+                            if (returnCode.Code.Item1 == 0)
+                            {
+                                mainWindow.snackbarPopup($"{value} Written to {opcServer.RWTag}");
+                            }
+                            else
+                            {
+                                mainWindow.snackbarPopup($"Invalid {returnCode.correctType} Value");
+                            }
+                           
                             
                         });
                     });
