@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Management.Instrumentation;
@@ -11,10 +12,11 @@ using System.Windows.Threading;
 using Opc.Ua;
 using Opc.UaFx;
 using Opc.UaFx.Client;
+using static Opc.UaFx.OpcObjectTypes;
 
 namespace OPC_UA_Client.Core
 {
-    public class OPCServer
+    public class OPCClient
     {
 
         public string RWTag;
@@ -42,15 +44,20 @@ namespace OPC_UA_Client.Core
             } 
         }
 
-        private static OPCServer instance = null;
+        private static OPCClient instance = null;
         private static readonly object padlock = new object();
 
         public bool connected;
         public string EndpointURL { get; set; }
 
+        public List<string> AllTagIDs { get
+            {
+                return GetAllTagIDs(true);
+            } }
+
         private OpcClient client;
 
-        public OPCServer()
+        public OPCClient()
         {
             this.EndpointURL = "";
 
@@ -58,7 +65,7 @@ namespace OPC_UA_Client.Core
             {
                 client = new OpcClient(EndpointURL);
                 client.Connect();
-                connected = true;
+                connected = true;   
             }
             catch
             {
@@ -66,7 +73,7 @@ namespace OPC_UA_Client.Core
             }
         }
 
-        public static OPCServer Instance
+        public static OPCClient Instance
         {
             get
             {
@@ -74,7 +81,7 @@ namespace OPC_UA_Client.Core
                 {
                     if (instance == null)
                     {
-                        instance = new OPCServer();
+                        instance = new OPCClient();
                     }
                     return instance;
                 }
@@ -211,6 +218,47 @@ namespace OPC_UA_Client.Core
             }
         }
 
+        private List<string> GetAllTagIDs(bool realTimeOnly = false)
+        {
+            if (connected)
+            {
+                // Browse the server's address space
+                var root = client.BrowseNode(OpcObjectTypes.RootFolder);
+
+                List<string> AllTagIDs = new List<string>();
+
+                // Recursively traverse the address space and print the TagIDs of all nodes
+                TraverseNodes(root, false);
+
+                void TraverseNodes(OpcNodeInfo node, bool realTimeTags)
+                {
+                    if (connected)
+                    {
+                        if (node.NodeId.ToString() == ("ns=2;s=Realtimedata") && realTimeOnly == true) { realTimeTags = true; }
+
+                        // Print the TagID of this node
+                        if (node.NodeId.Value is string tagId && (realTimeTags || !realTimeOnly))
+                        {
+                            OpcValue readNode = ReadTag(tagId);
+
+                            AllTagIDs.Add(node.NodeId.ToString()); ;
+                        }
+
+                        // Recursively traverse child nodes
+                        foreach (var child in node.Children())
+                        {
+                            TraverseNodes(child, realTimeTags);
+                        }
+                    }
+                    
+                }
+
+                return AllTagIDs;
+
+            }
+
+            return null;
+        }
 
         public void Disconnect()
         {

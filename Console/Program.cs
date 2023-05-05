@@ -23,13 +23,7 @@ namespace Console
             
             OpcClient client = new OpcClient("opc.tcp://uksgclap055:62640/IntegrationObjects/ServerSimulator");
             client.Connect();
-
-            var node = client.ReadNode("ns=2;s=Tag13");
-            var value = node.Value.GetType();
-
-            System.Console.WriteLine(value);
-            System.Console.ReadKey();
-
+            /*
             double dpp = Convert.ToDouble(client.ReadNode("2:DPP").Value);
             double dpr = Convert.ToDouble(client.ReadNode("2:DPR").Value);
             double dppl = Convert.ToDouble(client.ReadNode("2:DPPL").Value);
@@ -37,7 +31,7 @@ namespace Console
             double pres = Convert.ToDouble(client.ReadNode("2:Pres").Value);
             double dens = Convert.ToDouble(client.ReadNode("2:Dens").Value);
 
-            /*
+            
             while (true)
             {
                 try
@@ -90,16 +84,19 @@ namespace Console
                     break;
                 }
             }
+            
             */
+            
+            Traverse_Nodes(client, true);
+
+            var nod = client.BrowseNode("2:Tag1");
+            System.Console.WriteLine(client.ReadNode(nod.NodeId));
+
+            client.WriteNode("2:Tag14", 23);
 
             
-            //Traverse_Nodes(client, true);
-
-            //var nod = client.BrowseNode("2:Tag1");
-            //System.Console.WriteLine(client.ReadNode(nod.NodeId));
-
-            //client.WriteNode("2:Tag14", 23);            
-            //System.Console.ReadKey();
+            
+            System.Console.ReadKey();
         
             
         }

@@ -23,7 +23,7 @@ namespace OPC_UA_Client.Screens
     /// </summary>
     public partial class SettingsPage : UserControl
     {
-        private OPCServer opcServer = OPCServer.Instance;
+        private OPCClient opcClient = OPCClient.Instance;
         private MainWindow mainWindow;
 
         public SettingsPage()
@@ -31,7 +31,7 @@ namespace OPC_UA_Client.Screens
             InitializeComponent();
             Loaded += UserControl_Loaded;
 
-            if(opcServer.connected)
+            if(opcClient.connected)
             {
                 connectionStatusIcon.Foreground = Brushes.Green;
                 connectButton.IsEnabled = false;
@@ -58,10 +58,10 @@ namespace OPC_UA_Client.Screens
         {
             if(endpointTextBox.Text.Length > 0)
             {
-                opcServer.EndpointURL = endpointTextBox.Text;
+                opcClient.EndpointURL = endpointTextBox.Text;
                     try
                     {
-                        opcServer.Connect();
+                        opcClient.Connect();
                         connectionStatusIcon.Foreground = Brushes.Green;
                         connectButton.IsEnabled = false;
                         disconnectButton.IsEnabled = true;
@@ -79,7 +79,7 @@ namespace OPC_UA_Client.Screens
 
         private void disconnectButton_Click(object sender, RoutedEventArgs e)
         {
-            opcServer.Disconnect();
+            opcClient.Disconnect();
             connectionStatusIcon.Foreground = Brushes.Red;
             connectButton.IsEnabled = true;
             disconnectButton.IsEnabled = false;
@@ -87,8 +87,8 @@ namespace OPC_UA_Client.Screens
 
         private void writeTagTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            opcServer.RWTag = writeTagTextBox.Text;
-            writeTagDataTypeTextBox.Text = opcServer.RWTagType;
+            opcClient.RWTag = writeTagTextBox.Text;
+            writeTagDataTypeTextBox.Text = opcClient.RWTagType;
         }
     }
 }

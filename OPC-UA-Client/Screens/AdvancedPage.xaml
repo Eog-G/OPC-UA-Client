@@ -4,10 +4,34 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:OPC_UA_Client.Screens"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
-             Background="LightBlue"
+             Background="GhostWhite"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <Label Content="AdvancedPage"/>
+
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+
+            <Label Style="{StaticResource MaterialDesignLabel}" Content="Real Time Data" FontWeight="ExtraBlack" FontSize="23" HorizontalContentAlignment="Center"/>
+            <materialDesign:Card Height="294" MaxHeight="300" Width="auto">
+                <ListView x:Name="OPCTagsListView" FontSize="11" Padding="0">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn DisplayMemberBinding="{Binding DisplayName}" Header="Display Name" />
+                        <GridViewColumn DisplayMemberBinding="{Binding Value}" Header="Value" />
+                        <GridViewColumn DisplayMemberBinding="{Binding DataType}" Header="Data Type"/>
+                    </GridView>
+                </ListView.View>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            <Setter Property="FontSize" Value="9"/>
+                            <Setter Property="Padding" Value="0"/>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                </ListView>
+            </materialDesign:Card>
+            
+        </StackPanel>
     </Grid>
 </UserControl>

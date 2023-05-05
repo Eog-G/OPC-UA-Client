@@ -26,7 +26,7 @@ namespace OPC_UA_Client.Screens
     /// </summary>
     public partial class MainPage : UserControl
     {
-        private OPCServer opcServer = OPCServer.Instance;
+        private OPCClient opcClient = OPCClient.Instance;
         private ConcurrentQueue<string> _queue = new ConcurrentQueue<string>();
         private DispatcherTimer _timer;
         private MainWindow mainWindow;
@@ -55,12 +55,12 @@ namespace OPC_UA_Client.Screens
 
         private void Timer_Tick(object sender, EventArgs e)
         {
-            liveTextBox.Text = opcServer.ReadTag("2:Tag99");
+            liveTextBox.Text = opcClient.ReadTag("2:Tag99");
         }
 
         private void writeButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!opcServer.connected)
+            if (!opcClient.connected)
             {
                 mainWindow.snackbarPopup("No Server Connected");
                 return;
@@ -72,7 +72,7 @@ namespace OPC_UA_Client.Screens
             }
             else
             {
-                mainWindow.snackbarPopup("Invalid Int16 value");
+                mainWindow.snackbarPopup("Error: Empty Value");
             }
             
             writeTextBox.Text = null;
@@ -80,13 +80,13 @@ namespace OPC_UA_Client.Screens
 
         private void readButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!opcServer.connected)
+            if (!opcClient.connected)
             {
                 mainWindow.snackbarPopup("No Server Connected");
                 return;
             }
 
-            readTextBox.Text = opcServer.ReadTag(opcServer.RWTag);
+            readTextBox.Text = opcClient.ReadTag(opcClient.RWTag);
         }
 
         private async void ProcessQueueAsync()
@@ -97,12 +97,12 @@ namespace OPC_UA_Client.Screens
                 {
                     await Task.Run(() =>
                     {
-                        OPCReturnCode returnCode = opcServer.WriteValue(value);
+                        OPCReturnCode returnCode = opcClient.WriteValue(value);
                         Dispatcher.Invoke(() =>
                         {
                             if (returnCode.Code.Item1 == 0)
                             {
-                                mainWindow.snackbarPopup($"{value} Written to {opcServer.RWTag}");
+                                mainWindow.snackbarPopup($"{value} Written to {opcClient.RWTag}");
                             }
                             else
                             {
@@ -119,7 +119,7 @@ namespace OPC_UA_Client.Screens
 
         private void liveButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!opcServer.connected)
+            if (!opcClient.connected)
             {
                 mainWindow.snackbarPopup("No Server Connected");
                 return;

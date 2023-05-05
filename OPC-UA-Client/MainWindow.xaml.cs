@@ -29,7 +29,7 @@ namespace OPC_UA_Client
     /// </summary>
     public partial class MainWindow : Window
     {
-        private OPCServer opcServer = OPCServer.Instance;
+        private OPCClient opcServer = OPCClient.Instance;
         private int SelectedPageIndex = 1;
         private ObservableString snackbarMessage = new ObservableString();
 
@@ -41,6 +41,8 @@ namespace OPC_UA_Client
 
         private void Window_Closed(object sender, EventArgs e)
         {
+            AdvancedPage.timer.Stop();
+            Thread.Sleep(5000);
             opcServer.Disconnect();
         }
 
@@ -66,11 +68,13 @@ namespace OPC_UA_Client
             { 
                 RightNavigationButton.Visibility = Visibility.Hidden;
                 LeftNavigationButton.Visibility = Visibility.Visible;
+                AdvancedPage.timer.Start();
             }
             else 
             { 
                 RightNavigationButton.Visibility = Visibility.Visible;
                 LeftNavigationButton.Visibility = Visibility.Visible;
+                AdvancedPage.timer.Stop();
             }
         }
 
