@@ -1,4 +1,5 @@
-﻿using Opc.Ua;
+﻿using Microsoft.Xaml.Behaviors.Layout;
+using Opc.Ua;
 using OPC_UA_Client.Core;
 using System;
 using System.Collections.Concurrent;
@@ -63,6 +64,11 @@ namespace OPC_UA_Client.Screens
             if (!opcClient.connected)
             {
                 mainWindow.snackbarPopup("No Server Connected");
+                return;
+            }
+            if (opcClient.RWTagType == "null")
+            {
+                mainWindow.snackbarPopup("Invalid Tag ID");
                 return;
             }
 

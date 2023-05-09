@@ -32,6 +32,10 @@ namespace OPC_UA_Client.Core
                 Code = new Tuple<int, string>(code, "OPC Server Not Connected");
                 
             }
+            if (code == 3)
+            {
+                Code = new Tuple<int, string>(code, "Invalid Tag ID");
+            }
         }
     }
 }

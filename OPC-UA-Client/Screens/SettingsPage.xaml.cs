@@ -62,6 +62,7 @@ namespace OPC_UA_Client.Screens
                     try
                     {
                         opcClient.Connect();
+                        opcClient.PopulateCurrentOPCNodes();
                         connectionStatusIcon.Foreground = Brushes.Green;
                         connectButton.IsEnabled = false;
                         disconnectButton.IsEnabled = true;

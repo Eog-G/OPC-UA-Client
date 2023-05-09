@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Management.Instrumentation;
+using System.Net;
 using System.Runtime.CompilerServices;
 using System.ServiceModel.Dispatcher;
 using System.Text;
@@ -18,16 +19,17 @@ namespace OPC_UA_Client.Core
 {
     public class OPCClient
     {
+        public List<OPCNode> currentNodes = new List<OPCNode>();
 
-        public string RWTag;
+        public string RWTag; // Tag specifically chosen to Read / Write to on main page
 
-        public string RWTagType 
+        public string RWTagType // Gets RWTag data type
         { 
             get 
             {
                 try
                 {
-                    var node = client.ReadNode(RWTag);
+                    OpcValue node = client.ReadNode(RWTag);
                     if (node.Value != null)
                     {
                         return node.DataType.ToString();
@@ -49,11 +51,6 @@ namespace OPC_UA_Client.Core
 
         public bool connected;
         public string EndpointURL { get; set; }
-
-        public List<string> AllTagIDs { get
-            {
-                return GetAllTagIDs(true);
-            } }
 
         private OpcClient client;
 
@@ -92,6 +89,7 @@ namespace OPC_UA_Client.Core
         {
             if(connected)
             {
+
                 var node = client.ReadNode(RWTag);
                 var nodeType = node.DataType.ToString();
 
@@ -182,7 +180,6 @@ namespace OPC_UA_Client.Core
                     return new OPCReturnCode(0); // OK    
                 }
                 else { return new OPCReturnCode(-1); }
-                    
             }
             else
             {
@@ -218,14 +215,14 @@ namespace OPC_UA_Client.Core
             }
         }
 
-        private List<string> GetAllTagIDs(bool realTimeOnly = false)
+        public void PopulateCurrentOPCNodes(bool realTimeOnly = true)
         {
             if (connected)
             {
+                currentNodes.Clear();
+
                 // Browse the server's address space
                 var root = client.BrowseNode(OpcObjectTypes.RootFolder);
-
-                List<string> AllTagIDs = new List<string>();
 
                 // Recursively traverse the address space and print the TagIDs of all nodes
                 TraverseNodes(root, false);
@@ -237,11 +234,17 @@ namespace OPC_UA_Client.Core
                         if (node.NodeId.ToString() == ("ns=2;s=Realtimedata") && realTimeOnly == true) { realTimeTags = true; }
 
                         // Print the TagID of this node
-                        if (node.NodeId.Value is string tagId && (realTimeTags || !realTimeOnly))
+                        if (node.NodeId.Value is string tagId && (realTimeTags || !realTimeOnly) && !tagId.Contains("Realtimedata"))
                         {
-                            OpcValue readNode = ReadTag(tagId);
+                            OPCNode opcNode = new OPCNode();
+                            OpcValue readNode = client.ReadNode("2:" + tagId);
 
-                            AllTagIDs.Add(node.NodeId.ToString()); ;
+                            opcNode.DisplayName = "2:" + node.DisplayName;
+                            //opcNode.Value = readNode.Value.ToString(); Value is not needed as it is read each time within the advanced page
+                            opcNode.DataType = readNode.DataType.ToString();
+
+
+                            currentNodes.Add(opcNode);
                         }
 
                         // Recursively traverse child nodes
@@ -250,14 +253,8 @@ namespace OPC_UA_Client.Core
                             TraverseNodes(child, realTimeTags);
                         }
                     }
-                    
                 }
-
-                return AllTagIDs;
-
             }
-
-            return null;
         }
 
         public void Disconnect()

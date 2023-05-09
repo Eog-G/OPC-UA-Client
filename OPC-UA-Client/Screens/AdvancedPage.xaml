@@ -26,8 +26,8 @@
                     <ListView.View>
                     <GridView>
                         <GridViewColumn DisplayMemberBinding="{Binding DisplayName}" Header="Display Name" />
-                        <GridViewColumn DisplayMemberBinding="{Binding Value}" Header="Value" />
-                        <GridViewColumn DisplayMemberBinding="{Binding DataType}" Header="Data Type"/>
+                            <GridViewColumn DisplayMemberBinding="{Binding Value}" Header="Value"/>
+                            <GridViewColumn DisplayMemberBinding="{Binding DataType}" Header="Data Type"/>
                     </GridView>
                 </ListView.View>
                     <ListView.ItemContainerStyle>

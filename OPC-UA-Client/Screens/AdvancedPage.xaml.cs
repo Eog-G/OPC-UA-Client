@@ -33,8 +33,7 @@ namespace OPC_UA_Client.Screens
         private DispatcherTimer _timer;
         private MainWindow mainWindow;
 
-        private List<string> tagIDs = new List<string>();
-        private ObservableCollection<OPCListItem> items = new ObservableCollection<OPCListItem>();
+        private ObservableCollection<OPCNode> items = new ObservableCollection<OPCNode>();
 
         public System.Timers.Timer timer = new System.Timers.Timer(1000);
 
@@ -63,22 +62,21 @@ namespace OPC_UA_Client.Screens
         {
             if (opcClient.connected)
             {
-                tagIDs = opcClient.AllTagIDs;
-
-                var itemsToAdd = new List<OPCListItem>();
+                var itemsToAdd = new List<OPCNode>();
 
                 await Task.Run(() =>
                 {
-                    foreach (string tagID in tagIDs)
+                    foreach (OPCNode opcNode in opcClient.currentNodes)
                     {
-                        var tag = opcClient.ReadTag(tagID);
+                        var tag = opcClient.ReadTag(opcNode.DisplayName);
 
-                        itemsToAdd.Add(new OPCListItem() { DisplayName = tagID, Value = tag, DataType = "DataType1" });
+                        itemsToAdd.Add(new OPCNode() { DisplayName = opcNode.DisplayName, Value = tag, DataType = opcNode.DataType });
                     }
                 });
 
                 Dispatcher.Invoke(() =>
                 {
+                    OPCTagsListView.BorderBrush = Brushes.Transparent;
                     items.Clear();
 
                     foreach (var item in itemsToAdd)
@@ -86,8 +84,6 @@ namespace OPC_UA_Client.Screens
                         items.Add(item);
                     }
                 });
-                
-                
             }
         }
 
@@ -101,35 +97,6 @@ namespace OPC_UA_Client.Screens
 
         }
 
-        private void Traverse_Nodes(OpcClient client, bool realTimeOnly = false)
-        {
-            // Browse the server's address space
-            var root = client.BrowseNode(OpcObjectTypes.RootFolder);
-
-            // Recursively traverse the address space and print the TagIDs of all nodes
-            TraverseNodes(root, false);
-
-            void TraverseNodes(OpcNodeInfo node, bool realTimeTags)
-            {
-
-                if (node.NodeId.ToString() == ("ns=2;s=Realtimedata") && realTimeOnly == true) { realTimeTags = true; }
-
-                // Print the TagID of this node
-                if (node.NodeId.Value is string tagId && (realTimeTags || !realTimeOnly))
-                {
-                    
-                    OpcValue readNode = opcClient.ReadTag(tagId);
-
-                    items.Add(new OPCListItem() { DisplayName = node.DisplayName, Value = client.ReadNode(node.NodeId).ToString(), DataType = readNode.DataType.ToString() });
-
-                }
-
-                // Recursively traverse child nodes
-                foreach (var child in node.Children())
-                {
-                    TraverseNodes(child, realTimeTags);
-                }
-            }
-        }
+        
     }
 }
